@@ -14,7 +14,7 @@ def readLines(filename):
     return lines
 
 
-def saveImagesData(csv_filename):
+def saveImagesData(csv_filename, dir_to_save):
     lines = readLines(csv_filename)
 
     image_dir = os.path.dirname(csv_filename)
@@ -40,16 +40,23 @@ def saveImagesData(csv_filename):
     X_right = np.array(right_images)
     y = np.array(directions)
 
-    np.save(os.path.join(image_dir, 'X_center'), X_center)
-    np.save(os.path.join(image_dir, 'X_left'), X_left)
-    np.save(os.path.join(image_dir, 'X_right'), X_right)
+    np.save(os.path.join(dir_to_save, 'y'), y)
+    np.save(os.path.join(dir_to_save, 'X_center'), X_center)
+    np.save(os.path.join(dir_to_save, 'X_left'), X_left)
+    np.save(os.path.join(dir_to_save, 'X_right'), X_right)
 
 
 # image_root = '../behavioral_cloning_images' # on personal computer
 image_root = '../data'  # on udacity project
+dir_to_save = '/opt/'
 
 csv_files = [os.path.join(dp, f) for dp, dn, filenames in os.walk(
     image_root) for f in filenames if os.path.splitext(f)[1] == '.csv']
 
+i = 1
 for file in csv_files:
-    saveImagesData(file)
+    print('Processing images from file ', file)
+    dir_name =  dir_to_save + str(i)
+    os.mkdir(dir_name)
+    saveImagesData(file, dir_name)
+    i = i + 1
