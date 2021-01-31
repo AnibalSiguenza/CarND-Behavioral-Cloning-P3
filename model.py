@@ -4,26 +4,34 @@ from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
-X_train = np.load('/opt/sample_data/X_center.npy')
-X_train = np.append(X_train, np.load('/opt/center_1/X_center.npy'), 0)
-X_train = np.append(X_train, np.load('/opt/center_2/X_center.npy'), 0)
-#X_train = np.append(X_train, np.load('/opt/bridge/X_center.npy'), 0)
-X_train = np.append(X_train, np.load('/opt/recovery_1/X_center.npy'), 0)
-X_train = np.append(X_train, np.load('/opt/reverse_1/X_center.npy'), 0)
-#X_train = np.append(X_train, np.load('/opt/no_border_1/X_center.npy'), 0)
+final_dataset_dir = '/opt/dataset'
 
-y_train = np.load('/opt/sample_data/y.npy')
-y_train = np.append(y_train, np.load('/opt/center_1/y.npy'), 0)
-y_train = np.append(y_train, np.load('/opt/center_2/y.npy'), 0)
-#y_train = np.append(y_train, np.load('/opt/bridge/y.npy'), 0)
-y_train = np.append(y_train, np.load('/opt/recovery_1/y.npy'), 0)
-y_train = np.append(y_train, np.load('/opt/reverse_1/y.npy'), 0)
-#y_train = np.append(y_train, np.load('/opt/no_border_1/y.npy'), 0)
+if not(os.path.exists(final_dataset_dir)):
+    os.mkdir(final_dataset_dir)
+    
+    X_train = np.load('/opt/sample_data/X_center.npy')
+    X_train = np.append(X_train, np.load('/opt/center_1/X_center.npy'), 0)
+    X_train = np.append(X_train, np.load('/opt/center_2/X_center.npy'), 0)
+    X_train = np.append(X_train, np.load('/opt/recovery_1/X_center.npy'), 0)
+    X_train = np.append(X_train, np.load('/opt/reverse_1/X_center.npy'), 0)
 
-# augmenting data by fliping
-X_train = np.append(X_train, np.flip(X_train,2), 0)
-y_train = np.append(y_train, -y_train, 0)
+    y_train = np.load('/opt/sample_data/y.npy')
+    y_train = np.append(y_train, np.load('/opt/center_1/y.npy'), 0)
+    y_train = np.append(y_train, np.load('/opt/center_2/y.npy'), 0)
+    y_train = np.append(y_train, np.load('/opt/recovery_1/y.npy'), 0)
+    y_train = np.append(y_train, np.load('/opt/reverse_1/y.npy'), 0)
+
+    # augmenting data by fliping
+    X_train = np.append(X_train, np.flip(X_train,2), 0)
+    y_train = np.append(y_train, -y_train, 0)
+    
+    np.save(os.path.join(final_dataset_dir, 'X_train'), X_train)
+    np.save(os.path.join(final_dataset_dir, 'y_train'), y_train)
+else:
+    X_train = np.load('/opt/dataset/X_train.npy')
+    y_train = np.load('/opt/dataset/y_train.npy')
 
 model = Sequential()
 
